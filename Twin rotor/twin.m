@@ -5,8 +5,8 @@ load("date_step_pitch.mat");
 load("step_azimuth_din0.mat");
 load("step_pitch_din0.mat");
 %%
-load("C:\Users\Roland\Desktop\Twin rotor\date_motor\azimuth_din0.mat");
-load("C:\Users\Roland\Desktop\Twin rotor\date_motor\pitch_din0.mat");
+load("C:\partitia d\Aplicatii\Matlab\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\azimuth_din0.mat");
+load("C:\partitia d\Aplicatii\Matlab\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\pitch_din0.mat");
 %load("step03_pitch_din0.mat");
 %load("step03_azimuth_din0.mat");
 %load("C:\Users\Roland\Desktop\Twin rotor\MDL\tras_char.mat");
@@ -453,7 +453,7 @@ fprintf("Eroarea medie pareatica pt H12 este: %.4f\n",emp);
 %% decuplarea
 close all;clc;
 G=zpk([H11,H12;
-    H21,H22]);
+    H21,H22])
 
 detG=minreal(zpk(H11*H22-H21*H12));
 
@@ -544,8 +544,8 @@ figure;step(Ho);
 figure;bode(H22);
 %%
 close all;clc;
-tr=10^-7;
-
+%tr=10^-7;
+tr=50*10^-6;
 %cita=abs(log(M))/sqrt(log(M)^2+pi^2);
 %wn=4/(cita*tr);
 
@@ -556,7 +556,7 @@ Hf=tf(33157,[1 3.527]);
 %Ho=tf(wn^2,[1, 2*cita*wn, wn^2])
 Ho=tf(1,[T 1])
 Hr=(1/Hf)*Ho/(1-Ho)
-Hminreal=minreal(zpk(Hr));
+Hminreal=minreal(zpk(Hr))
 Hdes=zpk(minreal(Hr*Hf));
 figure;step(Ho);
 figure;bode(Hdes);
