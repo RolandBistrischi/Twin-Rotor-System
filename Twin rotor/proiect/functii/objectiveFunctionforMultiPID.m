@@ -45,7 +45,7 @@ switch criteriu
             J=inf;
             return
         end
-        J = trapz(t, t .* e.^2);
+        J = trapz(t, t' .* e.^2);
 
     case "IAE"
         % Calcul IAE: Integral of Absolute Error
@@ -63,7 +63,7 @@ switch criteriu
             J=inf;
             return
         end
-        J = trapz(t, t .* abs(e));
+        J = trapz(t, t' .* abs(e));
 
     case "sensibility"
         % Folosește suma normelor pentru sensibilitate

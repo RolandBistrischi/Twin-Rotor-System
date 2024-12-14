@@ -593,18 +593,23 @@ H22= tf(33157,[1 3.527]);
 %Hasa=tf(33157,[1 500]);
 
 n = 20;
-RegFrac_H22_limitat_ISE = struct('regulator', cell(1, n)); % Inițializează un vector de structuri
+RegFrac_H11_sensibility = struct('regulator', cell(1, n)); % Inițializează un vector de structuri
 
 parfor i = 1:n
-    RegFrac_H22_limitat_ISE(i).regulator = PSO_CalculFractionarptProces(H22, i);
+    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
 end
 %%
 clc;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11.mat")
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrag_H22.mat")
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat.mat")
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ISE.mat")
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ISE.mat")
-
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ITSE.mat")  
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ITSE.mat")  
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_IAE.mat")
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_IAE.mat") 
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ITAE.mat") 
+load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ITAE.mat") 
 %% H11
 % 100s+100s^{-0.056961}+100s^{-1}    ///am pus
 % 100s+100s^{-0.60644}
@@ -626,9 +631,9 @@ exponenti_zerouri=[1, -0.9];
 
 
 for i=1:n
-    Hb=RegFrac_H22_limitat_ISE(i).regulator
+    Hb=RegFrac_H11_sensibility(i).regulator
     Hc= zpk(minreal( oustapp(Hb, 0.001, 1000, 7)));
-    loop1 = feedback( series( Hc , H22), 1);
+    loop1 = feedback( series( Hc , H11), 1);
     figure;
     step(loop1);
     %bode(H11*Hc);

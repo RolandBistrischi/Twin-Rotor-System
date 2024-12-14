@@ -39,7 +39,7 @@ function C = PSO_CalculFractionarptProces_MultiTermeni(Hp, n)
             Hc = fotf(poli, exponenti_poli, K_vals, a_vals);
             
             % Evaluăm funcția obiectiv
-            J = objectiveFunctionforMultiPID(Hc, Hp, 'ISE');
+            J = objectiveFunctionforMultiPID(Hc, Hp, 'sensibility');
             
             % Actualizăm cea mai bună soluție locală
             if J < personalBestScores(p)
