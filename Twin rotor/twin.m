@@ -595,21 +595,33 @@ H22= tf(33157,[1 3.527]);
 n = 20;
 RegFrac_H11_sensibility = struct('regulator', cell(1, n)); % Inițializează un vector de structuri
 
-parfor i = 1:n
+parfor i = 1:5
+    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+end
+parfor i = 6:11
+    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+end
+parfor i = 12:17
+    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+end
+parfor i = 18:n
     RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
 end
 %%
-clc;
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11.mat")
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrag_H22.mat")
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ISE.mat")
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ISE.mat")
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ITSE.mat")  
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ITSE.mat")  
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_IAE.mat")
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_IAE.mat") 
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ITAE.mat") 
-load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ITAE.mat") 
+clc;clear all;
+
+%load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11.mat")
+%load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\RegFrag_H22.mat")
+
+%%
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ISE.mat");
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ISE.mat");
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ITSE.mat")  
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ITSE.mat")  
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_IAE.mat")
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_IAE.mat") 
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H11_limitat_ITAE.mat") 
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\RegFrac_H22_limitat_ITAE.mat") 
 %% H11
 % 100s+100s^{-0.056961}+100s^{-1}    ///am pus
 % 100s+100s^{-0.60644}
@@ -631,7 +643,7 @@ exponenti_zerouri=[1, -0.9];
 
 
 for i=1:n
-    Hb=RegFrac_H11_sensibility(i).regulator
+    Hb=RegFrac_H11_limitat(i).regulator
     Hc= zpk(minreal( oustapp(Hb, 0.001, 1000, 7)));
     loop1 = feedback( series( Hc , H11), 1);
     figure;
@@ -648,6 +660,20 @@ bode(H22);title('Hp Proces');
 %pt H11 limitat
 %94.063s^{0.96455}+16.203s^{0.18248}+30.188s^{0.14617}-34.265s^{0.11287}   %utilizat
 %5.2928s^{0.25089}+24.681s^{0.18085}+35.565s^{0.079924}+100s^{-0.17508}-25.284s^{-0.38594}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

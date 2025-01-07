@@ -70,6 +70,8 @@ switch criteriu
         S = feedback(1, Hc * G);  % Funcția de sensibilitate
         T = feedback(Hc * G, 1);  % Funcția de sensibilitate complementară
         J = norm(S, inf) + norm(T, inf);
+        J = min(J, 1); 
+        J = 1 - J;
 
     case "combined"
         % Combinație de criterii: ISE, ITAE și sensibilitate
@@ -85,6 +87,8 @@ switch criteriu
         S = feedback(1, Hc * G);  % Funcția de sensibilitate
         T = feedback(Hc * G, 1);  % Funcția de sensibilitate complementară
         sensibility = norm(S, inf) + norm(T, inf);
+        sensibility = min(sensibility, 1); 
+        sensibility = 1 - sensibility;
         J = w1 * ISE + w2 * ITSE + w3 * IAE + w4 * ITAE + w5 * sensibility;
 
     otherwise
