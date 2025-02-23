@@ -1,6 +1,6 @@
-function C = PSO_CalculFractionarptProces_MultiTermeni(Hp, n)
+function C = PSO_CalculFractionarptProces(Hp, n,method,method_parameter)
     % Parametrii PSO
-    nParticles = 30;       % Număr de particule
+    nParticles = 50;       % Număr de particule
     nIterations = 50;     % Număr de iteratii
     dim = 2 * n;           % Dimensiunea particulei: K1...Kn și a1...an
     w = 0.7;               % Inerția
@@ -9,7 +9,7 @@ function C = PSO_CalculFractionarptProces_MultiTermeni(Hp, n)
     
     % Limitele variabilelor
     ai_limits = [-1, 1];    % Limite pentru a_i
-    Ki_limits = [-100, 100]; % Limite pentru K_i
+    Ki_limits = [-10, 100]; % Limite pentru K_i
     
     % Inițializare particule și viteze
     particles = rand(nParticles, dim);
@@ -36,10 +36,13 @@ function C = PSO_CalculFractionarptProces_MultiTermeni(Hp, n)
             % Construim regulatorul Hc
             poli = [1]; % Polinoame fixe pentru fotf
             exponenti_poli = [0];
+            %Gc_fotf = fotf({'Kp + Ki/s^lambda + Kd*s^mu'}, Kp, Ki, Kd, lambda, mu);
+
             Hc = fotf(poli, exponenti_poli, K_vals, a_vals);
             
             % Evaluăm funcția obiectiv
-            J = objectiveFunctionforMultiPID(Hc, Hp, 'sensibility');
+            %J = objectiveFunctionforMultiPID(Hc, Hp, method);
+            J=costFunction(Hc,Hp,method,method_parameter);
             
             % Actualizăm cea mai bună soluție locală
             if J < personalBestScores(p)

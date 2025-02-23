@@ -575,38 +575,51 @@ Hoo=zpk(minreal(Hdes/(1+Hdes)))
 
 %% Calcul fractionar MultiPID
 clc; close all;
-
+addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\functii\');
+addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\');
 H11=tf(8072.8,[1 1.287]);
 H22= tf(33157,[1 3.527]);
 
-% 
-% poli = [1];
-% exponenti_poli = [0];
-% zerouri = [-100];
-% exponenti_zerouri = [-0.99];
-%  Hc =fotf( poli, exponenti_poli,zerouri, exponenti_zerouri)
-% 
-%  B=minreal(oustapp(Hc, 0.01, 100, 3))
+
+%Optimizare gestionare parpool
+poolobj = gcp('nocreate'); % Obține pool-ul existent
+if isempty(poolobj)
+    parpool('Processes', 4); % 4 workeri pentru eficiență
+elseif poolobj.NumWorkers ~= 4
+    delete(poolobj);
+    parpool('Processes', 4);
+end
 
 
  %RegFrac=CalculFractionarptProces(H11)
 %Hasa=tf(33157,[1 500]);
 
-n = 20;
-RegFrac_H11_sensibility = struct('regulator', cell(1, n)); % Inițializează un vector de structuri
+criteriu='itae';
+%criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
+criteriu_combinat=0;
+
+
+n = 5;
+RegFrac_H11_ISE(n) = struct('regulator', [], 'runtime', []);
 
 parfor i = 1:5
-    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+    tic; % Start cronometru
+
+    reg = PSO_CalculFractionarptProces(H11, i, criteriu,criteriu_combinat);
+    runtime = toc; % Oprește cronometru și salvează durata
+
+    RegFrac_H11_ISE(i).regulator = reg;
+    RegFrac_H11_ISE(i).runtime = runtime;
 end
-parfor i = 6:11
-    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
-end
-parfor i = 12:17
-    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
-end
-parfor i = 18:n
-    RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
-end
+% parfor i = 6:11
+%     RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+% end
+% parfor i = 12:17
+%     RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+% end
+% parfor i = 18:n
+%     RegFrac_H11_sensibility(i).regulator = PSO_CalculFractionarptProces(H11, i);
+% end
 %%
 clc;clear all;
 
@@ -641,18 +654,25 @@ exponenti_zerouri=[1, -0.9];
 %RegFrac1=fotf([35 56 ], [2,3], [12 ],[2 ]);
 %RegFrac2=fotf([100 ], [-0.32], [0 ],[0 ]);%100s^-32,
 
+%load('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\Reg_frac_subFormaTF\RegFrac_H22_tf_ISE_primele5.mat')
+
+% Inițializează un vector de structuri
+RegFrac_H11_tf_ISE(n) = struct('regulator', []);
 
 for i=1:n
-    Hb=RegFrac_H11_limitat(i).regulator
+    Hb=RegFrac_H11_ISE(i).regulator
     Hc= zpk(minreal( oustapp(Hb, 0.001, 1000, 7)));
+    RegFrac_H11_tf_ISE(i).regulator=Hc;
     loop1 = feedback( series( Hc , H11), 1);
-    figure;
+   % figure;
     step(loop1);
+    hold on;
+
     %bode(H11*Hc);
 end
 figure
-%step(feedback(H11, 1));
-bode(H22);title('Hp Proces');
+step(feedback(H11, 1));title('H11 original');
+%bode(H22);title('Hp Proces');
 
 %J=objectiveFunctionforMultiPID(Hr,H11,'ISE')
 
