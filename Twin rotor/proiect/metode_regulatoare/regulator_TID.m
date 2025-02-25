@@ -14,7 +14,7 @@ clc;clear all; close all;
 %G=tf(8072.8,[1 1.287]);%H11
 G= tf(33157,[1 3.527]);%H22
 
-criteriu='sensibility';
+criteriu='itae';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
@@ -42,6 +42,7 @@ v=zeros(particles,Var+frac_var);
 x=v;
 xp=x;
 
+tic;
 for m=1:particles
 
     % Inițializare viteze
@@ -127,7 +128,7 @@ for i=1:iteration      %Nr of Repetition
     best_cf_ac(c_cf)=fg;
 end
 
-
+runtime=toc;
 Min_ITAE=fg
 
 % Model Parametres
@@ -151,14 +152,18 @@ bode(Gc*G);
 %%
 %pt H22    init=24;
 %pt H11    init=3;
-init=3;
+init=5;
 t_cf=init:c_cf;
 figure
 plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel(['Cost (' criteriu ')']);
 legend([criteriu ' for PSO-TID']);
 title('Error with each iteration');
-
-
+%%
+RegTID_H22_ITAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
+RegTID_H22_ITAE.regulator=Gc_fotf;
+RegTID_H22_ITAE.runtime=runtime;
+RegTID_H22_ITAE.iteration=iteration;
+RegTID_H22_ITAE.best=best_cf_ac;
 %%
 %H22
 % Min_ITAE =   9.1603e-12
