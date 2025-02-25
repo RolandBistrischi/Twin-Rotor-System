@@ -8,53 +8,14 @@
 
 addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\functii\');
 addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\');
-addpath(genpath('D:\MATLAB\Licenta_fractionar\Crone'))
-savepath;
 
-% Kp = 2;
-% Ki = 3;
-% Kd = 4;
-% lambda = 0.8;
-% mu =0.9;
 
-% Gc_fotf = fotf(1,0,[Kp, Ki, Kd], [0, -lambda, mu])
-% H=minreal(oustapp(Gc_fotf, 1e-3, 10, 5))
-%
-%
-%
-% Gf_initial=feedback(H*G,1);
-% figure;step(Gf_initial);title('G initial');
-%
-% figure;step(feedback(G,1))
-% figure; bode(H*G);
-% hold on
-% bode(G)
-
-%s = tf('s'); % Definește variabila Laplace
-%H  = frac_tf(frac_poly_exp([Kp Ki Kd], [0  -lambda  mu]),1) % Creează o funcție de transfer fracționară
-% %%
-% clc
-% num = frac_poly_exp([5], [0])  % Numărător: 5
-% den = frac_poly_exp([1 1 1], [1.2 0.5 0]) % Numitor: s^1.2 + s^0.5 + 1
-%
-% sys = frac_tf(num, den, 5, [1e-3 1e3]); % Crează funcția de transfer fracționară
-% %%
-% clc;
-%  %sys = frac_tf(1, frac_poly_exp([1 1 1], [1.2  0.5  0]), 5, [1e-3  1e3], [], [], 'Oustaloup')
-% num = frac_poly_exp(1, 0); % Numărător
-% den = frac_poly_exp([1,1,1], [1.2,0.5,0]); % Numitor
-%
-% sys = frac_tf(num, den) % Funcția de transfer fracționară
-%
-% H=oustapp(sys)
-%
-% %bode(H);
 %%
 clc;clear all; close all;
 
 
-%G=tf(8072.8,[1 1.287]);%H11
-G= tf(33157,[1 3.527]);%H22
+G=tf(8072.8,[1 1.287]);%H11
+%G= tf(33157,[1 3.527]);%H22
 
 criteriu='itae';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
@@ -66,8 +27,7 @@ step(Gf_initial);title('G initial');
 
 
 %PSO
-
-c=2;w=0.7;particles=70;iteration=100;Var=3;frac_var=2;
+c=2;w=0.7;particles=70;iteration=70;Var=3;frac_var=2;
 
 K_min=-10;% lower bound
 K_max=100; %upper bound
@@ -83,6 +43,7 @@ best_cf_ac=zeros(1,iteration);
 v=zeros(particles,Var+frac_var);
 x=v;
 xp=x;
+tic;
 
 for m=1:particles
 
@@ -163,7 +124,7 @@ for i=1:iteration      %Nr of Repetition
     c_cf=c_cf+1;
     best_cf_ac(c_cf)=fg;
 end
-
+runtime = toc;
 
 Min_ITAE=fg
 
@@ -195,7 +156,11 @@ plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel([
 legend([criteriu ' for PSO-FOPID']);
 title('Error with each iteration');
 
-
+RegFOPID_H11_ITAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
+RegFOPID_H11_ITAE.regulator=Gc_fotf;
+RegFOPID_H11_ITAE.runtime=runtime;
+RegFOPID_H11_ITAE.iteration=iteration;
+RegFOPID_H11_ITAE.best=best_cf_ac;
 %%
 % pt H22
 
