@@ -8,20 +8,20 @@ H22= tf(33157,[1 3.527]);
 %Optimizare gestionare parpool
 poolobj = gcp('nocreate'); % Obține pool-ul existent
 if isempty(poolobj)
-    parpool('Processes', 4); % 4 workeri pentru eficiență
-elseif poolobj.NumWorkers ~= 4
+    parpool('Processes', 8); % 4 workeri pentru eficiență
+elseif poolobj.NumWorkers ~= 8
     delete(poolobj);
-    parpool('Processes', 4);
+    parpool('Processes', 8);
 end
 
 G=H11;
-criteriu='itae';
+criteriu='iae';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
 
 n = 20;
-RegFrac_H11_ISE(n) = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
+RegFrac_H11_IAE(n) = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
 
 parfor i = 1:n
     tic; % Start cronometru
@@ -29,24 +29,24 @@ parfor i = 1:n
     [reg,iteration,best_cf_ac] = PSO(G, i, criteriu,criteriu_combinat);
     runtime = toc; % Oprește cronometru și salvează durata
 
-    RegFrac_H11_ISE(i).regulator = reg;
-    RegFrac_H11_ISE(i).runtime = runtime;
-    RegFrac_H11_ISE(i).iteration=iteration;
-    RegFrac_H11_ISE(i).best=best_cf_ac;
+    RegFrac_H11_IAE(i).regulator = reg;
+    RegFrac_H11_IAE(i).runtime = runtime;
+    RegFrac_H11_IAE(i).iteration=iteration;
+    RegFrac_H11_IAE(i).best=best_cf_ac;
 end
 %%
-i=1;
-Min_J=min( RegFrac_H11_ISE(i).best)
+for i=1:20;
+Min_J=min( RegFrac_H11_IAE(i).best)
 
-Gc = minreal(oustapp(RegFrac_H11_ISE(i).regulator, 1e-3, 10, 7));
+Gc = minreal(oustapp(RegFrac_H11_IAE(i).regulator, 1e-3, 10, 7));
 Gcf_global=minreal(feedback(Gc*G,1));
 
-figure;
-hold on
+%figure;
+%hold on
 Gf_initial=minreal(feedback(G,1));
-step(Gf_initial);
-step(Gcf_global);
-hold off
+%step(Gf_initial);
+%step(Gcf_global);
+%hold off
 %%
 figure;
 bode(G);hold on
@@ -56,22 +56,26 @@ bode(Gc*G);
 %pt H22    init=24;
 %pt H11    init=3;
 init=1;
-iteration=init:RegFrac_H11_ISE(i).iteration;
+iteration=init:RegFrac_H11_IAE(i).iteration;
 figure
-plot(iteration,RegFrac_H11_ISE(i).best(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel(['Cost (' criteriu ')']);
+plot(iteration,RegFrac_H11_IAE(i).best(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel(['Cost (' criteriu ')']);
 legend([criteriu ' for PSO-PID']);
 title('Error with each iteration');
 
 
 
-
+end
 
 
 %%
 function [Gc_fotf,iteration,best_cf_ac]=PSO(G, n_terms,criteriu,criteriu_combinat)
+particles = 70;
+if n_terms>6
+    particles = round(50*n_terms/4);
+end
 
 % Parametrii PSO
-c = 2; w = 0.7; particles = 70; iteration = 70;
+c = 2; w = 0.7; iteration = 70;
 K_min = -10; K_max = 100;
 frac_min = -1; frac_max = 1;
 
@@ -144,11 +148,11 @@ for i = 1:iteration
 end
 
 % Afișăm rezultatele
-Min_ITAE = fg;
+%Min_ITAE = fg;
 K_opt = xg(1:n_terms);
 alpha_opt = xg(n_terms+1:2*n_terms);
 
 % Reconstruim regulatorul final
 Gc_fotf = fotf(1,0,K_opt, alpha_opt);
-Gc = minreal(oustapp(Gc_fotf, 1e-3, 10, 7));
+%Gc = minreal(oustapp(Gc_fotf, 1e-3, 10, 7));
 end

@@ -25,7 +25,7 @@ step(Gf_initial);title('G initial');
 
 %PSO
 
-c=2;w=0.7;particles=70;iteration=70;Var=4;frac_var=3;
+c=2;w=0.7;particles=100;iteration=70;Var=4;frac_var=3;
 
 K_min=0;% lower bound
 K_max=100; %upper bound
@@ -43,6 +43,7 @@ best_cf_ac=zeros(1,iteration);
 v=zeros(particles,Var+frac_var+1);
 x=v;
 xp=x;
+tic;
 
 for m=1:particles
 
@@ -134,17 +135,17 @@ for i=1:iteration      %Nr of Repetition
     best_cf_ac(c_cf)=fg;
 end
 
-
+runtime=toc
 Min_ITAE=fg
-
+%%
 % Model Parametres
-[kt, ki, kd, Nf,n,lambda,miu,lambdaf] = deal(x(m, 1), x(m, 2), x(m, 3), x(m, 4),x(m, 5), x(m, 6), x(m, 7), x(m, 8));
+[kt, ki, kd, Nf,n,lambda,miu,lambdaf] = deal(x(m, 1), x(m, 2), x(m, 3), x(m, 4),x(m, 5), x(m, 6), x(m, 7), x(m, 8))
 
 
 %Simulation Model
- Gc_1=fotf(1,0,[kt, ki], [-1/n, -lambda]);
-        Gc_ff=fotf([1, Nf],[lambdaf,0],kd*Nf, miu);
-        Gc_fotf=Gc_1+Gc_ff;
+Gc_1=fotf(1,0,[kt, ki], [-1/n, -lambda]);
+Gc_ff=fotf([1, Nf],[lambdaf,0],kd*Nf, miu);
+Gc_fotf=Gc_1+Gc_ff
 
 Gc = minreal(oustapp(Gc_fotf, 1e-3, 10, 7));
 Gcf_global=minreal(feedback(Gc*G,1));
@@ -167,6 +168,11 @@ plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel([
 legend([criteriu ' for PSO-PID']);
 title('Error with each iteration');
 
+RegTFOIDFFID_H22_ITAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
+RegTFOIDFFID_H22_ITAE.regulator=Gc_fotf;
+RegTFOIDFFID_H22_ITAE.runtime=runtime;
+RegTFOIDFFID_H22_ITAE.iteration=iteration;
+RegTFOIDFFID_H22_ITAE.best=best_cf_ac;
 
 %%
 %H22
@@ -186,3 +192,22 @@ title('Error with each iteration');
 
 
 
+%H22 IAE
+% kt =   56.6695
+% ki =     0
+% kd =    0.3166
+% Nf =   99.0530
+% n =    1.2769
+% lambda =     1
+% miu =    1.0000
+% lambdaf =    0.9999
+
+%H22 ITAE
+% kt =   15.0133
+% ki =     0
+% kd =     0
+% Nf =   91.9722
+% n =    1.8919
+% lambda =     1
+% miu =    1.0000
+% lambdaf =     0
