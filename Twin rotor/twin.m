@@ -1,4 +1,4 @@
-%close all;clc;
+close all;clc;clear;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 
 %%
@@ -11,8 +11,8 @@ load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_moto
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\pitch_din0.mat");
 
 %%
-load("C:\partitia d\Aplicatii\Matlab\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\azimuth_din0.mat");
-load("C:\partitia d\Aplicatii\Matlab\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date_motor\pitch_din0.mat");
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\azimuth_din0.mat");
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_motor\pitch_din0.mat");
 %load("step03_pitch_din0.mat");
 %load("step03_azimuth_din0.mat");
 %load("C:\Users\Roland\Desktop\Twin rotor\MDL\tras_char.mat");
@@ -98,7 +98,7 @@ plot(t_azi_validare,u_azi_validare);
 hold on;
 plot(t_azi_validare,azi_rpm_validare);
 hold on;
-lsim(H22,u_azi_validare,t_azi_validare,'g');legend('u val','y val','H(s)');title("H22 simulator");
+lsim(H22,u_azi_validare,t_azi_validare,'g');legend('y val','H(s)');title("H22 simulator");
 ysim=lsim(H22,u_azi_validare,t_azi_validare,'g');
 
 %e=azi_rpm_identificare-ysim;
@@ -106,14 +106,14 @@ ysim=lsim(H22,u_azi_validare,t_azi_validare,'g');
 %fprintf("Eroarea medie pareatica pt H22 este: %.4f\n",emp);
 
 figure;
-plot(t_motor,y_motor);title('Tensiunea pe motorul Azimuth la treapta 1');
+plot(t_motor,y_motor);title('Tensiunea pe motorul Azimuth la treapta u=0.2');legend('y motor')
 
 figure;
-plot(t_motor,u_motor);
+%plot(t_motor,u_motor);
+%hold on;
+plot(t_motor,y_motor,'r');
 hold on;
-plot(t_motor,y_motor);
-hold on;
-lsim(H22,u_motor,t_motor,'g');legend('u val','y mot','H(s)');title("H22 fizic");
+lsim(H22,u_motor,t_motor,'g');legend('y motor','H(s)');title("H22 fizic");
 ysim=lsim(H22,u_motor,t_motor,'g');
 
 e=y_motor-ysim;
@@ -222,7 +222,7 @@ plot(t_pitch_identificare,u_azi_identificare);
 hold on;
 plot(t_pitch_identificare,pitch_rpm_identificare);
 hold on;
-lsim(H21,u_azi_identificare,t_pitch_identificare,'g');legend('u val','y val','H(s)');title("H21")
+lsim(H21,u_azi_identificare,t_pitch_identificare,'g');legend('u val','y val','H(s)');title("H21: Pitch RPM with step on azimuth")
 ysim=lsim(H21,u_azi_identificare,t_pitch_identificare,'g');
 
 e=pitch_rpm_identificare-ysim;
@@ -276,13 +276,13 @@ emp=1/length(e)*sum(e.^2);
 
 
 figure;
-plot(t_motor,y_mot);title('Tensiunea pe motorul Pitch la treapta 0.2');
+plot(t_motor,y_mot);title('Viteza de rotatie a motorul Pitch la treapta u=0.2');legend('y motor')
 figure;
 plot(t_motor,u_mot);
 hold on;
-plot(t_motor,y_mot);
+plot(t_motor,y_mot,'r');
 hold on;
-lsim(H11,u_motor,t_motor,'g');legend('u val','y mot','H(s)');title("H11 fizic");
+lsim(H11,u_motor,t_motor,'b');legend('H(s)','y motor');title("H11 fizic");
 ysim=lsim(H11,u_motor,t_motor,'g');
 
 e=y_mot-ysim;
@@ -326,7 +326,7 @@ plot(t_azi_identificare,u_azi_identificare);
 hold on;
 plot(t_azi_identificare,azi_rpm_identificare);
 hold on;
-lsim(H12,u_azi_identificare,t_azi_identificare,'g');legend('u val','y val','H(s)');title("H12");
+lsim(H12,u_azi_identificare,t_azi_identificare,'g');legend('y val','H(s)');title("H12");
 ysim=lsim(H12,u_azi_identificare,t_azi_identificare,'g');
 
 e=azi_rpm_identificare-ysim;

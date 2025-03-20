@@ -36,7 +36,8 @@ for iii = 1:length(folderPaths)
         % Adaugă toate variabilele încărcate în structura nouă
         varNames = fieldnames(data);
         for j = 1:length(varNames)
-            loadedData(iii).(varNames{j}) = data.(varNames{j});
+            a=sortare(data.(varNames{j}));
+            loadedData(iii).(varNames{j}) = a(1:6);
         end
     end
 end
