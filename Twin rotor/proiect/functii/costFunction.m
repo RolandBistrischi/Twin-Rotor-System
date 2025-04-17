@@ -1,9 +1,20 @@
 function ff1=costFunction(Gc,G, criteriu, varargin)
 % Verificare și conversie tip Gc
 if isa(Gc, 'fotf')
-    Gc = minreal(oustapp(Gc, 1e-3, 10, 7));
+    try
+        Gc = minreal(oustapp(Gc, 1e-3, 10, 7));
+    catch
+        % Aproximarea a eșuat – atribuim un cost mare
+        ff1 =  5 * 10^5;
+        return;
+    end
 elseif ~isa(Gc, 'tf') && ~isa(Gc, 'pid')
     error('Gc trebuie să fie de tip tf, fotf sau pid.');
+end
+
+if isequal(Gc, tf(0, 1)) %|| isequal(Gc, tf(1, 1))
+    ff1 = 5 * 10^5;
+    return;
 end
 
 H11=tf(8072.8,[1 1.287]);
@@ -115,10 +126,33 @@ switch lower(criteriu)
 
     case "sensibility"
         % Folosește suma normelor pentru sensibilitate
+        %S = feedback(1, Hc * G);  % Funcția de sensibilitate
+        %T = feedback(Hc * G, 1);  % Funcția de sensibilitate complementară
+        %sensibility = 1 - min(norm(S, inf) + norm(T, inf), 1);
+        %J = sensibility;
+
         S = feedback(1, Hc * G);  % Funcția de sensibilitate
         T = feedback(Hc * G, 1);  % Funcția de sensibilitate complementară
-        sensibility = 1 - min(norm(S, inf) + norm(T, inf), 1);
-        J = sensibility;
+
+        % Calcul norma H-infinit (cea mai mare amplificare)
+        S_inf = norm(S, inf);
+        T_inf = norm(T, inf);
+
+        % Praguri recomandate
+        S_max = 2;   % Sensibilitate maximă admisă
+        T_max = 1.5; % Sensibilitate complementară maximă admisă
+
+        % Penalizare dacă se depășesc pragurile
+        penalty_S = max(0, S_inf - S_max);  % Dacă S > 2, penalizează
+        penalty_T = max(0, T_inf - T_max);  % Dacă T > 1.5, penalizează
+
+        % Funcția de cost
+        J = penalty_S + penalty_T;  % Penalizare cumulativă
+
+        % Dacă sistemul este instabil (norma prea mare), setează costul la Inf
+        if S_inf > 100 || T_inf > 100
+            J = Inf;
+        end
 
     case "combined"
         % Combinație de criterii: ISE, ITAE și sensibilitate
