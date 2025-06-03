@@ -9,7 +9,7 @@ addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\');
 
 
 clc;clear all; close all;
-
+%%
 
 %G=tf(8072.8,[1 1.287]);%H11
 G= tf(33157,[1 3.527]);%H22
@@ -21,7 +21,7 @@ criteriu_combinat=0;
 Gf_initial=feedback(G,1);
 step(Gf_initial);title('G initial');
 
-
+%%
 
 %PSO
 

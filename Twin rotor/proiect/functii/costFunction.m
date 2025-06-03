@@ -12,6 +12,13 @@ elseif ~isa(Gc, 'tf') && ~isa(Gc, 'pid')
     error('Gc trebuie să fie de tip tf, fotf sau pid.');
 end
 
+Gc_zpk = zpk(Gc);
+[z, p, ~] = zpkdata(Gc_zpk, 'v');
+if length(z) > length(p)
+    ff1 = 5 * 10^5;
+    return;
+end
+
 if isequal(Gc, tf(0, 1)) %|| isequal(Gc, tf(1, 1))
     ff1 = 5 * 10^5;
     return;

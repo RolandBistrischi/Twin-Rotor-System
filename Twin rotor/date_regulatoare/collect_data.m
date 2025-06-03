@@ -4,14 +4,14 @@ clear all; close all; clc;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 
 % Adaugă calea către directoare
-addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_PID\');
+addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_TID\');
 
 
 %%
 % Definire căi pentru toate tipurile de regulatoare
 folderPaths = {
-    'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_PID\H11\', ...
-    'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_PID\H22\', ...
+    'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_TID\H11\', ...
+    'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_TID\H22\', ...
     % 'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_TID\H11\', ...
     %'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_TID\H22\', ...
     % 'D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\date_regulatoare\Reg_PID\H11\', ...
@@ -56,34 +56,34 @@ clc;
 
 
 % Procesează regulatoarele pentru H11 și H22
-% Reg_TID_H11 = [
-%     loadedData(1).RegTID_H11_ISE,
-%    loadedData(1).RegTID_H11_ITSE, 
-%     loadedData(1).RegTID_H11_IAE, 
-%     loadedData(1).RegTID_H11_ITAE,
-%     loadedData(1).RegTID_H11_sensibility
-% ];
-% 
-% Reg_TID_H22 = [
-%    loadedData(2).RegTID_H22_ISE, ...
-%   loadedData(2).RegTID_H22_ITSE, ...
-%    loadedData(2).RegTID_H22_IAE, ...
-%    loadedData(2).RegTID_H22_ITAE, ...
-%     loadedData(2).RegTID_H22_sensibility
-% ];
-% 
-% %%
-% Reg_TID_H11=[minreal(oustapp(RegTID_H11_ISE.regulator)) ,
-%  minreal(oustapp(RegTID_H11_ITSE.regulator))    ,
-%  minreal(oustapp(RegTID_H11_IAE.regulator))    ,
-%  minreal(oustapp(RegTID_H11_ITAE.regulator))    ,
-%  minreal(oustapp(RegTID_H11_sensibility.regulator ))       ]
-% 
-% Reg_TID_H22=[minreal(oustapp( RegTID_H22_ISE.regulator)) ,
-% minreal(oustapp(RegTID_H22_ITSE.regulator))     ,
-% minreal(oustapp(RegTID_H22_IAE.regulator))     ,
-%  minreal(oustapp(RegTID_H22_ITAE.regulator))    ,
-%   minreal(oustapp(RegTID_H22_sensibility.regulator ))     ]
+Reg_TID_H11 = [
+    loadedData(1).RegTID_H11_ISE,
+   loadedData(1).RegTID_H11_ITSE, 
+    loadedData(1).RegTID_H11_IAE, 
+    loadedData(1).RegTID_H11_ITAE,
+    loadedData(1).RegTID_H11_sensibility
+];
+
+Reg_TID_H22 = [
+   loadedData(2).RegTID_H22_ISE, ...
+  loadedData(2).RegTID_H22_ITSE, ...
+   loadedData(2).RegTID_H22_IAE, ...
+   loadedData(2).RegTID_H22_ITAE, ...
+    loadedData(2).RegTID_H22_sensibility
+];
+
+%%
+Reg_TID_H11=[minreal(oustapp( loadedData(1).RegTID_H11_ISE.regulator)) ,
+ minreal(oustapp( loadedData(1).RegTID_H11_ITSE.regulator))    ,
+ minreal(oustapp( loadedData(1).RegTID_H11_IAE.regulator))    ,
+ minreal(oustapp( loadedData(1).RegTID_H11_ITAE.regulator))    ,
+ minreal(oustapp( loadedData(1).RegTID_H11_sensibility.regulator ))       ]
+
+Reg_TID_H22=[minreal(oustapp(  loadedData(2).RegTID_H22_ISE.regulator)) ,
+minreal(oustapp( loadedData(2).RegTID_H22_ITSE.regulator))     ,
+minreal(oustapp( loadedData(2).RegTID_H22_IAE.regulator))     ,
+ minreal(oustapp( loadedData(2).RegTID_H22_ITAE.regulator))    ,
+  minreal(oustapp( loadedData(2).RegTID_H22_sensibility.regulator ))     ]
 
 
 

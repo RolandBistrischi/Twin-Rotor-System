@@ -10,8 +10,23 @@ ref_azi_step_azi=azimuth_az_intrare.Data(:,1);
 azimuth_rpm_step_azi=azimuth_az_intrare.Data(:,2:6);
 azimuth_pos_step_azi=azimuth_az_intrare.Data(:,7:11);
 
-figure;plot(azi_time,azimuth_rpm_step_azi);legend('ISE','ITSE','IAE','ITAE','fara regulator');title('Comparatie Azimuth RPM cu si fara regulator pentru trapta la azimuth');xlabel('timp');ylabel('referinta')
-%figure;plot(azi_time,azimuth_pos_step_azi);
+figure;
+plot(azi_time, azimuth_rpm_step_azi);
+legend('ISE','ITSE','IAE','ITAE','inițial');
+title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
+       ' azimutului pentru un răspuns la un semnal treaptă'});
+xlabel('Timp [s]');
+ylabel('Viteză de rotație [RPM]');
+
+% Adaugă un inset (axă mică de zoom in)
+axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+box on; % ramă în jurul inset-ului
+index = azi_time >=2.5*10-4 & azi_time <=6*10-3; % ajustează după zona care te interesează
+index = azi_time >=0.00002 & azi_time <=0.0005; % ajustează după zona care te interesează
+
+
+plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
+title('Zoom-in');
 
 
 %%
@@ -23,8 +38,23 @@ pitch_rpm_step_azi=pitch_az_intrare.Data(:,2:6);
 pitch_pos_step_azi=pitch_az_intrare.Data(:,7:11);
 
 
-figure;plot(pit_time,pitch_rpm_step_azi);legend('ISE','ITSE','IAE','ITAE','fara regulator');title('Comparatie Pitch RPM cu si fara regulator pentru trapta la azimuth');xlabel('timp');ylabel('referinta')
-%figure;plot(azi_time,pitch_pos_step_azi);
+figure;
+plot(azi_time(1:180), azimuth_rpm_step_azi(1:180,:));
+legend('ISE','ITSE','IAE','ITAE','inițial');
+title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
+       ' pitch-ului pentru un răspuns la un semnal treaptă'});
+xlabel('Timp [s]');
+ylabel('Viteză de rotație [RPM]');
+
+% Adaugă un inset (axă mică de zoom in)
+axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+box on; % ramă în jurul inset-ului
+index = azi_time >=2.5*10-4 & azi_time <=6*10-3; % ajustează după zona care te interesează
+index = azi_time >=0.00002 & azi_time <=0.0005; % ajustează după zona care te interesează
+
+
+plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
+title('Zoom-in');
 
 %%
 
@@ -53,16 +83,32 @@ figure;plot(azi_time,azimuth_rpm_step_pit);legend('ISE','ITSE','IAE','ITAE','far
 %%
 pitch_pit_intrare=pitch.out.pitch_regulator_step_pitch;
 
-pit_time=pitch_pit_intrare.Time;
+pitch_time=pitch_pit_intrare.Time;
 ref_pit_step_pit=pitch_pit_intrare.Data(:,1);
 pitch_rpm_step_pit=pitch_pit_intrare.Data(:,2:6);
 pitch_pos_step_pit=pitch_pit_intrare.Data(:,7:11);
 
 
-figure;plot(pit_time,pitch_rpm_step_pit);legend('ISE','ITSE','IAE','ITAE','fara regulator');title('Comparatie Pitch RPM cu si fara regulator pentru trapta la pitch');xlabel('timp');ylabel('referinta')
+%figure;legend('ISE','ITSE','IAE','ITAE','fara regulator');title('Comparatie Pitch RPM cu si fara regulator pentru trapta la pitch');xlabel('timp');ylabel('referinta')
 %figure;plot(azi_time,pitch_pos_step_azi);
 
+figure;
+plot(pitch_time,pitch_rpm_step_pit);
+legend('ISE','ITSE','IAE','ITAE','inițial');
+title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
+       ' pitch-ului pentru un răspuns la un semnal treaptă'});
+xlabel('Timp [s]');
+ylabel('Viteză de rotație [RPM]');
 
+% Adaugă un inset (axă mică de zoom in)
+axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+box on; % ramă în jurul inset-ului
+index = pitch_time >=2.5*10-4 & pitch_time <=6*10-3; % ajustează după zona care te interesează
+index = pitch_time >=0.00002 & pitch_time <=0.005; % ajustează după zona care te interesează
+
+
+plot(pitch_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
+title('Zoom-in');
 
 
 %%
@@ -135,7 +181,12 @@ Reg_PID_H22 = [
     ];
 H11=tf(8072.8,[1 1.287]);
 H22= tf(33157,[1 3.527]);
+%%
+clc;
+H=Reg_PID_H22(4).regulator
 
+
+%%
 close all;
 figure;
 hold on;
