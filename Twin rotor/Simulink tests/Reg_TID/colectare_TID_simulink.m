@@ -219,9 +219,16 @@ Reg_TID_H11=[minreal(oustapp( loadedData(1).RegTID_H11_ISE.regulator)) ,
 %   ]
 %%
 clc;
-Hr=loadedData(2).RegTID_H22_IAE.regulator
+Hr=loadedData(2).RegTID_H22_IAE.regulator;
+
+H11_TID= minreal(oustapp( loadedData(1).RegTID_H11_ITAE.regulator));
+
+H22_TID= minreal(oustapp( loadedData(2).RegTID_H22_ITAE.regulator));
 
 
+[num_TID11, den_TID11] = tfdata(tf(H11_TID), 'v');
+
+[num_TID22, den_TID22] = tfdata(tf(H22_TID), 'v');
 
 
 %%

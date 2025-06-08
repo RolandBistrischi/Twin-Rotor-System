@@ -183,8 +183,19 @@ H11=tf(8072.8,[1 1.287]);
 H22= tf(33157,[1 3.527]);
 %%
 clc;
-H=Reg_FOPID_H11(1).regulator
+H=Reg_FOPID_H11(1).regulator;
 
+H11_FOPID=minreal(oustapp( loadedData(1).RegFOPID_H11_ITAE.regulator));
+
+H22_FOPID=minreal(oustapp( loadedData(2).RegFOPID_H22_ITAE.regulator));
+
+[num_FOPID11, den_FOPID11] = tfdata(tf(H11_FOPID), 'v');
+
+HHHHH=tf(num,den);
+
+[num_FOPID22, den_FOPID22] = tfdata(tf(H11_FOPID), 'v');
+
+%HHHHH=tf(num,den)
 
 %%
 close all;
