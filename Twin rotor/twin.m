@@ -1,4 +1,4 @@
-close all;clc;clear;
+%close all;clc;clear;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 
 %%
@@ -83,7 +83,9 @@ T=0.2835;
 %H11=ss(A,B,C,D)
 H22=tf(K,[T,1])
 %H11=tf(8393,[ 0.22  1])%magdalena
-
+%
+figure;step(H22)
+%
 %figure;plot(t_azi,u_azi,t_azi,azi_rpm);title("Azimuth RPM");
 %hold on;
 t_azi_validare=t_azi_identificare;
@@ -460,9 +462,9 @@ fprintf("Eroarea medie pareatica pt H12 este: %.4f\n",emp);
 
 %% decuplarea
 close all;clc;
-G=zpk([H11,H12;
-    H21,H22])
-
+G=[H11,H12;
+    H21,H22]
+%%
 detG=minreal(zpk(H11*H22-H21*H12));
 
 ggg1=minreal(zpk(36*660000*tf([0.7562*0.1762 0.9324 1],conv(conv([0.4685 1],[0.1583 1]),conv([0.7562 1],[0.1762 1])))));
@@ -472,9 +474,9 @@ GGG=ggg1-ggg2;
 
 
 D=minreal(1/detG*[H22 -H12;
-    -H21 H11]);% aici H e defapt G
+    -H21 H11])% aici H e defapt G
 %H=[H11,0;    0, H22];
-
+%%
 %D=minreal(zpk(1/(H11*H22-H12*H21)*[H11*H11,-H12*H22; -H21*H11,H11*H22]));
 %D2=minreal(zpk(G^-1  ))
 
@@ -482,7 +484,7 @@ a=3.2039e08;
 
 
 H=[tf(2.6767*10^8/33157,[1 1.287]),0;
-    0, tf(2.6767*10^8/8072.8,[1 3.527])];
+    0, tf(2.6767*10^8/8072.8,[1 3.527])]
 
 
 D2=zpk([1,tf(15.615/8072.8*[1 1.287],[1 1.322]);

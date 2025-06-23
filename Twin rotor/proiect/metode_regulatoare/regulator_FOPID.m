@@ -17,7 +17,7 @@ clc;clear all; close all;
 G=tf(8072.8,[1 1.287]);%H11
 %G= tf(33157,[1 3.527]);%H22
 
-criteriu='itae';
+criteriu='ise';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
@@ -127,7 +127,7 @@ end
 runtime = toc;
 
 Min_ITAE=fg
-
+%%
 kp=xg(1)
 ki=xg(2)
 kd=xg(3)
@@ -142,9 +142,9 @@ hold on
 step(Gf_initial)
 hold off
 %%
-figure;
-bode(G);hold on
-bode(Gc*G);
+%figure;
+%bode(G);hold on
+%bode(Gc*G);
 
 %%
 %pt H22    init=24;
@@ -156,12 +156,16 @@ plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel([
 legend([criteriu ' for PSO-FOPID']);
 title('Error with each iteration');
 
-RegFOPID_H11_ITAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
-RegFOPID_H11_ITAE.regulator=Gc_fotf;
-RegFOPID_H11_ITAE.runtime=runtime;
-RegFOPID_H11_ITAE.iteration=iteration;
-RegFOPID_H11_ITAE.best=best_cf_ac;
+RegFOPID_H11_ISE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii',[]);
+RegFOPID_H11_ISE.regulator=Gc_fotf;
+RegFOPID_H11_ISE.runtime=runtime;
+RegFOPID_H11_ISE.iteration=iteration;
+RegFOPID_H11_ISE.best=best_cf_ac;
+RegFOPID_H11_ISE.parametrii=xg;
 %%
+zzzzzzz= minreal(oustapp( RegFOPID_H11_ISE.regulator, 1e-3, 10, 7))
+figure;step(feedback(zzzzzzz*G,1))
+%bode(G)
 % pt H22
 
 % Min_ITAE =   9.1682e-12

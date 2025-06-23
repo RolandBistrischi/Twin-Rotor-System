@@ -15,37 +15,40 @@ elseif poolobj.NumWorkers ~= 8
 end
 
 G=H22;
-criteriu='itae';
+criteriu='ise';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
 
-n = 20 ;
-RegFrac_H22_ITAE(n) = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
+n = 10 ;
+RegFrac_H22_ISE(n) = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii_K',[],'parametrii_alpha',[]);
 
 parfor i = 1:n
     tic; % Start cronometru
 
-    [reg,iteration,best_cf_ac] = PSO(G, i, criteriu,criteriu_combinat);
+    [reg,iteration,best_cf_ac,K_opt,alpha_opt] = PSO(G, i, criteriu,criteriu_combinat);
     runtime = toc; % Oprește cronometru și salvează durata
 
-    RegFrac_H22_ITAE(i).regulator = reg;
-    RegFrac_H22_ITAE(i).runtime = runtime;
-    RegFrac_H22_ITAE(i).iteration=iteration;
-    RegFrac_H22_ITAE(i).best=best_cf_ac;
+    RegFrac_H22_ISE(i).regulator = reg;
+    RegFrac_H22_ISE(i).runtime = runtime;
+    RegFrac_H22_ISE(i).iteration=iteration;
+    RegFrac_H22_ISE(i).best=best_cf_ac;
+    RegFrac_H22_ISE(i).parametrii_K=K_opt;
+    RegFrac_H22_ISE(i).parametrii_alpha=alpha_opt;
 end
 %%
-for i=1:20
-Min_J=min( RegFrac_H22_ITAE(i).best)
+close all;
+for i=1:10
+Min_J=min( RegFrac_H22_ISE(i).best)
 
-Gc = minreal(oustapp(RegFrac_H22_ITAE(i).regulator, 1e-3, 10, 7));
+Gc = minreal(oustapp(RegFrac_H22_ISE(i).regulator, 1e-3, 10, 7))
 Gcf_global=minreal(feedback(Gc*G,1));
 
-%figure;
-%hold on
+figure;
+hold on
 Gf_initial=minreal(feedback(G,1));
-%step(Gf_initial);
-%step(Gcf_global);
+step(Gf_initial);
+step(Gcf_global);
 %hold off
 %%
 figure;
@@ -56,9 +59,9 @@ bode(Gc*G);
 %pt H22    init=24;
 %pt H11    init=3;
 init=1;
-iteration=init:RegFrac_H22_ITAE(i).iteration;
+iteration=init:RegFrac_H22_ISE(i).iteration;
 figure
-plot(iteration,RegFrac_H22_ITAE(i).best(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel(['Cost (' criteriu ')']);
+plot(iteration,RegFrac_H22_ISE(i).best(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel(['Cost (' criteriu ')']);
 legend([criteriu ' for PSO-PID']);
 title('Error with each iteration');
 
@@ -66,9 +69,8 @@ title('Error with each iteration');
 
 end
 
-
 %%
-function [Gc_fotf,iteration,best_cf_ac]=PSO(G, n_terms,criteriu,criteriu_combinat)
+function [Gc_fotf,iteration,best_cf_ac,K_opt,alpha_opt]=PSO(G, n_terms,criteriu,criteriu_combinat)
 particles = 70;
 if n_terms>6
     particles = round(50*n_terms/4);

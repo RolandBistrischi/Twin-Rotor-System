@@ -11,10 +11,10 @@ addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\');
 clc;clear all; close all;
 
 
-%G=tf(8072.8,[1 1.287]);%H11
-G= tf(33157,[1 3.527]);%H22
+G=tf(8072.8,[1 1.287]);%H11
+%G= tf(33157,[1 3.527]);%H22
 
-criteriu='itae';
+criteriu='ise';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
@@ -130,7 +130,7 @@ end
 
 runtime=toc;
 Min_ITAE=fg
-
+%%
 % Model Parametres
 [kt, ki, kd, n] = deal(xg( 1), xg( 2), xg(3), xg(4))
 
@@ -159,11 +159,12 @@ plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel([
 legend([criteriu ' for PSO-TID']);
 title('Error with each iteration');
 %%
-RegTID_H22_ITAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[]);
-RegTID_H22_ITAE.regulator=Gc_fotf;
-RegTID_H22_ITAE.runtime=runtime;
-RegTID_H22_ITAE.iteration=iteration;
-RegTID_H22_ITAE.best=best_cf_ac;
+RegTID_H11_ISE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii',[]);
+RegTID_H11_ISE.regulator=Gc_fotf;
+RegTID_H11_ISE.runtime=runtime;
+RegTID_H11_ISE.iteration=iteration;
+RegTID_H11_ISE.best=best_cf_ac;
+RegTID_H11_ISE.parametrii=xg;
 %%
 %H22
 % Min_ITAE =   9.1603e-12

@@ -24,16 +24,21 @@ if isequal(Gc, tf(0, 1)) %|| isequal(Gc, tf(1, 1))
     return;
 end
 
+%H11=tf(8072.8,[1 1.287]);
 H11=tf(8072.8,[1 1.287]);
 H22= tf(33157,[1 3.527]);
 
 % Determinare constantă de timp T
 if isequal(G, H11)
-    T = 0.000485/4;
-    T_rise=0.000272; % timp ridicare pt procesul initial
+    %T =3.04;
+    %T_rise=1.71; % timp ridicare pt procesul initial
+    T=0.005;
+    T_rise=0.001;
 elseif isequal(G, H22)
-    T = 0.000118/4;
-    T_rise=6.63e-05;% timp ridicare pt procesul initial
+    %T =1/4;
+    %T_rise=0.5/4;% timp ridicare pt procesul initial
+    T=0.001;
+    T_rise=0.0001;
 else
     T = inf; % Default dacă G nu este H11 sau H22
 end
@@ -41,8 +46,64 @@ end
 ff1 = 5 * 10^5;
 
 Gcf=minreal(zpk(feedback(Gc*G,1)));
-t = 0:0.000001:0.0008; % Pas mai mic pentru precizie
+t = 0:0.00001:0.9; % Pas mai mic pentru precizie
 y=step(Gcf,t);
+
+
+
+% %%
+% 
+% % Parametri simulare
+% dt = 0.001;                           % Pas de timp
+% Tsim = 5;                             % Timp total
+% t = 0:dt:Tsim;
+% N = length(t);
+% r = 10*ones(1, N);                       % Semnal de referință
+% 
+% % Inițializare vectori
+% e = zeros(1, N);
+% u = zeros(1, N);
+% y = zeros(1, N);
+% 
+% % Inițializare stări
+% x_reg = [];                          % stare regulator
+% x_proc = [];                         % stare proces
+% 
+% % Simulare pas cu pas
+% for k = 2:N
+%     % Eroare
+%     e(k) = r(k) - y(k-1);
+% 
+%     % Răspunsul regulatorului Hr la eroare
+%     [u_sim, ~, x_reg] = lsim(Gc, [e(k-1), e(k)], [0, dt], x_reg);
+%     u(k) = u_sim(end);
+% 
+%     % Limitare semnal de comandă
+%     u(k) = max(min(u(k), 1), -1);
+% 
+%     % Aplicare semnal de comandă asupra procesului Gp
+%     [y_sim, ~, x_proc] = lsim(G, [u(k-1), u(k)], [0, dt], x_proc);
+%     y(k) = y_sim(end);
+% end
+
+% Afișare rezultate
+% figure;
+% subplot(2,1,1);
+% plot(t, y, 'LineWidth', 1.5);
+% title('Ieșire sistem (y)'); ylabel('y(t)');
+% 
+% subplot(2,1,2);
+% plot(t, u, 'LineWidth', 1.5);
+% title('Semnal de comandă (u)'); ylabel('u(t)'); xlabel('Timp [s]');
+%figure; plot(t, e, 'LineWidth', 1.5);
+%%
+
+if y(2)>0.5
+    return
+end
+
+hold on;
+%figure;step(feedback(Gc*G,1))
 
 % if y(1)<y(end)
 %     y=y-y(1);
@@ -53,7 +114,7 @@ if any(isnan(y)) || any(isinf(y)) || max(abs(y)) > 100
     return;
 end
 
-% Calcul Timp de răspuns (T_r) și Timp de ridicare (T_rid)
+% Calcul Timp de ridicare (T_rid)
 y_final = y(end);
 idx_90 = find(y >= 0.9 * y_final, 1);
 idx_10 = find(y >= 0.1 * y_final, 1);
@@ -62,10 +123,24 @@ if isempty(idx_90) || isempty(idx_10)
     return;
 end
 
-% Calculăm timpul de răspuns
-tol = 0.01; % Prag pentru a considera că suntem la regim stabil
-idx = find(abs(y - y_final) <= tol, 1, 'first');
-T_r = t(idx)/4;
+% Calculăm timpul de raspuns
+tol = 0.01;           % Pragul pentru regim staționar
+in_regim = abs(y - y(end)) <= tol;
+
+% Găsim tranzițiile: 0 -> 1 (intrare în regim), 1 -> 0 (ieșire din regim)
+transitions = diff([0; in_regim(:)]);  % Extindem cu 0 pentru a prinde prima intrare
+
+idx_in = find(transitions == 1);  % Indecșii unde intră în regim
+idx_out = find(transitions == -1); % Indecșii unde iese din regim
+
+if isempty(idx_in)
+    T_r = inf; % Niciodată nu intră în regim
+elseif isscalar(idx_in) && (isempty(idx_out) || idx_in(end) > idx_out(end))
+    T_r = t(idx_in(1)); % Intrare unică, sistem monoton
+else
+    T_r = t(idx_in(end)); % Mai multe intrări: sistem oscilant ⇒ ultima intrare
+end
+
 
 T_rid = t(idx_90) - t(idx_10);
 
@@ -73,16 +148,32 @@ if T_r==0 || T_rid==0
     return
 end
 
-
+%T_r
+%T
 %Intervalele dorite
-if (T_r < T / 10 || T_r > T / 2)
+%if (T_r < T / 4 || T_r > T * 1.5)
+if ( T_r < T  || T_r>0.5)
     return;
 end
 
-if (T_rid < T_rise / 10 || T_rid > T_rise / 2)
+
+if (T_rid < T_rise /2)% || T_rid > T_rise*7 )
+%if (T_rid > T_rise * 3 || T_rid < T_rise / 4)
     return
 end
 
+% 
+
+% figName = 'Step Response CostFunction';
+% figHandle = findobj('Type', 'figure', 'Name', figName);
+% if isempty(figHandle) || ~isvalid(figHandle)
+%     figHandle = figure('Name', figName);
+% else
+%     figure(figHandle);
+% end
+% 
+% hold on;
+% step(Gcf);
 %ITAE
 
 %ff1 = trapz(t, abs(y - 1) .* t');
@@ -112,7 +203,7 @@ if strcmpi(criteriu, "combined")
 end
 
 J = 5 * 10^5;
-e=y-1;
+e=1-y;
 if any(isnan(e)) || any(isinf(e))
     return;
 end
