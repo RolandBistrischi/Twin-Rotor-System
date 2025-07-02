@@ -1,0 +1,86 @@
+%Colectare date sistem real
+
+close all;clear;clc;
+load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Testare echipament\Teste pe motor bun\MultiPID_ISE.mat")
+
+cc=1:size(step_azimuth, 1); 
+
+ref_azimuth = step_azimuth(cc,1);
+y_azi = step_azimuth(cc,2);
+angle_azi = step_azimuth(cc,3);
+comanda_azi = step_azimuth(cc,4);
+
+T = 1; % durata totală în secunde
+N = size(step_azimuth(cc,2), 1); 
+t = linspace(0, T, N); % vector de timp în secunde
+
+figure;
+
+% 1. Comparație între referință și răspuns
+subplot(3,1,1);
+plot(t, ref_azimuth, 'r--', 'LineWidth', 1.5); hold on;
+plot(t, y_azi/8100, 'b', 'LineWidth', 1.5);
+xlabel('Timp [s]');
+ylabel('RPM');
+title('Referință și răspuns azimuth');
+legend('Referință', 'Răspuns');
+grid on;
+
+% 2. Plot pentru unghi azimutal
+subplot(3,1,2);
+plot(t, angle_azi, 'k', 'LineWidth', 1.5);
+xlabel('Timp [s]');
+ylabel('Unghi [rad]');
+title('Unghiul pe azimuth');
+grid on;
+
+% 3. Plot pentru semnal de comandă
+subplot(3,1,3);
+plot(t, comanda_azi, 'm', 'LineWidth', 1.5);
+xlabel('Timp [s]');
+ylabel('Comandă');
+title('Semnal de comandă azimuth');
+grid on;
+
+
+%%
+cc=1:size(step_pitch, 1); 
+
+ref_pitch = step_pitch(cc,5);
+y_pitch = step_pitch(cc,6);
+angle_pitch = step_pitch(cc,7);
+comanda_pitch = step_pitch(cc,8);
+
+
+
+T = 1.5; % durata totală în secunde
+N = size(step_pitch(cc,6), 1); 
+t = linspace(0, T, N); % vector de timp în secunde
+
+
+figure;
+% 1. Comparație între referință și răspuns
+subplot(3,1,1);
+plot(t, ref_pitch, 'r--', 'LineWidth', 1.5); hold on;
+plot(t, y_pitch/4800, 'b', 'LineWidth', 1.5);
+xlabel('Timp [s]');
+ylabel('RPM');
+title('Referință și răspuns pitch');
+legend('Referință', 'Răspuns');
+grid on;
+
+% 2. Plot pentru unghi azimutal
+subplot(3,1,2);
+plot(t, angle_pitch, 'k', 'LineWidth', 1.5);
+xlabel('Timp [s]');
+ylabel('Unghi [rad]');
+title('Unghiul pe pitch');
+grid on;
+
+% 3. Plot pentru semnal de comandă
+subplot(3,1,3);
+plot(t, comanda_pitch, 'm', 'LineWidth', 1.5);
+xlabel('Timp [s]');
+ylabel('Comandă');
+title('Semnal de comandă pitch');
+grid on;

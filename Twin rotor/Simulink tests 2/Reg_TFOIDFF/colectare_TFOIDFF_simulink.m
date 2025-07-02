@@ -2,8 +2,8 @@
 close all;clear all; clc;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 %%
-azimuth=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests\Reg_TFOIDFF\date_step_azimuth.mat");
-pitch=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests\Reg_TFOIDFF\date_step_pitch.mat");
+azimuth=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests 2\Reg_TFOIDFF\date_step_azimuth.mat");
+pitch=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests 2\Reg_TFOIDFF\date_step_pitch.mat");
 
 azimuth_az_intrare=azimuth.out.azimuth_regulator_step_azimuth;
 
@@ -14,21 +14,21 @@ azimuth_pos_step_azi=azimuth_az_intrare.Data(:,7:11);
 
 figure;
 plot(azi_time, azimuth_rpm_step_azi);
-legend('ISE','ITSE','IAE','ITAE','inițial');
+legend('IAE','ITSE','ISE','ITAE','inițial');
 title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
        ' azimutului pentru un răspuns la un semnal treaptă'});
 xlabel('Timp [s]');
 ylabel('Viteză de rotație [RPM]');
 
 % Adaugă un inset (axă mică de zoom in)
-axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
-box on; % ramă în jurul inset-ului
-index = azi_time >=2.5*10-4 & azi_time <=6*10-3; % ajustează după zona care te interesează
-index = azi_time >=0.00002 & azi_time <=0.005; % ajustează după zona care te interesează
-
-
-plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
-title('Zoom-in');
+% axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+% box on; % ramă în jurul inset-ului
+% index = azi_time >=2.5*10-4 & azi_time <=6*10-3; % ajustează după zona care te interesează
+% index = azi_time >=0.00002 & azi_time <=0.005; % ajustează după zona care te interesează
+% 
+% 
+% plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
+% title('Zoom-in');
 
 
 %%
@@ -96,21 +96,21 @@ pitch_pos_step_pit=pitch_pit_intrare.Data(:,7:11);
 
 figure;
 plot(pitch_time,pitch_rpm_step_pit);
-legend('ISE','ITSE','IAE','ITAE','inițial');
+legend('IAE','ITSE','ISE','ITAE','inițial');
 title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
        ' pitch-ului pentru un răspuns la un semnal treaptă'});
 xlabel('Timp [s]');
 ylabel('Viteză de rotație [RPM]');
 
 % Adaugă un inset (axă mică de zoom in)
-axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
-box on; % ramă în jurul inset-ului
-index = pitch_time >=2.5*10-4 & pitch_time <=6*10-1; % ajustează după zona care te interesează
-index = pitch_time >=0.00002 & pitch_time <=0.05; % ajustează după zona care te interesează
-
-
-plot(pitch_time(index), pitch_rpm_step_pit(index,1:end-1), 'LineWidth', 1.5);
-title('Zoom-in');
+% axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+% box on; % ramă în jurul inset-ului
+% index = pitch_time >=2.5*10-4 & pitch_time <=6*10-1; % ajustează după zona care te interesează
+% index = pitch_time >=0.00002 & pitch_time <=0.05; % ajustează după zona care te interesează
+% 
+% 
+% plot(pitch_time(index), pitch_rpm_step_pit(index,1:end-1), 'LineWidth', 1.5);
+% title('Zoom-in');
 
 
 
@@ -206,12 +206,12 @@ Reg_TFOIDFFID_H22 = [
 ];
 
 %%
-Reg_TID_H11=[minreal(oustapp( loadedData(1).RegTID_H11_ISE.regulator)) ,
- minreal(oustapp( loadedData(1).RegTID_H11_ITSE.regulator))    ,
- minreal(oustapp( loadedData(1).RegTID_H11_IAE.regulator))    ,
- minreal(oustapp( loadedData(1).RegTID_H11_ITAE.regulator))    ,
-% minreal(oustapp( loadedData(1).RegTID_H11_sensibility.regulator ))     
- ]
+% Reg_TID_H11=[minreal(oustapp( loadedData(1).RegTID_H11_ISE.regulator)) ,
+%  minreal(oustapp( loadedData(1).RegTID_H11_ITSE.regulator))    ,
+%  minreal(oustapp( loadedData(1).RegTID_H11_IAE.regulator))    ,
+%  minreal(oustapp( loadedData(1).RegTID_H11_ITAE.regulator))    ,
+% % minreal(oustapp( loadedData(1).RegTID_H11_sensibility.regulator ))     
+%  ]
 % 
 % Reg_TID_H22=[minreal(oustapp(  loadedData(2).RegTID_H22_ISE.regulator)) ,
 % minreal(oustapp( loadedData(2).RegTID_H22_ITSE.regulator))     ,
@@ -245,13 +245,13 @@ hold on;
 bode(H11, 'b--');  % Linie întreruptă pentru sistemul inițial
 
 % Plot pentru fiecare regulator din Reg_PID_H11
-for i = 1:length(Reg_TID_H11)
-    Gc =minreal(oustapp( Reg_TID_H11(i).regulator));
+for i = 1:length(Reg_TFOIDFFID_H11)
+    Gc =minreal(oustapp( Reg_TFOIDFFID_H11(i).regulator));
     bode(Gc * H11);
 end
 
 % Adaugă titlu, legende și etichete
-title('Diagrama Bode pentru H11 și regulatoare TID');
+title('Diagrama Bode pentru H11 și regulatoare TFOIDFFID');
 %legend_entries = ['Sistem inițial'; arrayfun(@(x) sprintf('Regulator %d', x), 1:length(Reg_PID_H11), 'UniformOutput', false)];
 %legend(legend_entries, 'Location', 'Best');
 legend("H11",'ISE','ITSE','IAE','ITAE')
@@ -260,14 +260,14 @@ ylabel('Amplitudine și fază');
 
 hold off;
 
-init=5;
+init=7;
 figure;
-for i = 1:length(Reg_TID_H11)
-    a = Reg_TID_H11(i).iteration;  % Accesează numărul de iterații pentru acest regulator
+for i = 1:length(Reg_TFOIDFFID_H11)
+    a = Reg_TFOIDFFID_H11(i).iteration;  % Accesează numărul de iterații pentru acest regulator
     iteration = 1:a;  % Vectorul de iterații
 
     % Accesează vectorul 'best' pentru fiecare regulator
-    best_values = Reg_TID_H11(i).best(init:end);
+    best_values = Reg_TFOIDFFID_H11(i).best(init:end);
     % Asigură-te că lungimea lui 'iteration' și 'best_values' sunt egale
     if length(iteration) ~= length(best_values)
         iteration = iteration(1:length(best_values));  % Ajustează lungimea dacă e nevoie
@@ -291,27 +291,27 @@ hold on;
 % Plot Bode pentru sistemul inițial
 bode(H22, 'b--');  % Linie întreruptă pentru sistemul inițial
 
-for i = 1:length(Reg_TID_H22)
-    Gc =minreal(oustapp( Reg_TID_H22(i).regulator));
+for i = 1:length(Reg_TFOIDFFID_H22)
+    Gc =minreal(oustapp( Reg_TFOIDFFID_H22(i).regulator));
     bode(Gc * H22);
 end
 
 % Adaugă titlu, legende și etichete
-title('Diagrama Bode pentru H22 și regulatoare TID');
+title('Diagrama Bode pentru H22 și regulatoare TFOIDFFID');
 legend("H22",'ISE','ITSE','IAE','ITAE')
 xlabel('Frecvență (rad/s)');
 ylabel('Amplitudine și fază');
 
 hold off;
 
-init=8;
+init=7;
 figure;
-for i = 1:length(Reg_TID_H22)
-    a = Reg_TID_H22(i).iteration;  % Accesează numărul de iterații pentru acest regulator
+for i = 1:length(Reg_TFOIDFFID_H22)
+    a = Reg_TFOIDFFID_H22(i).iteration;  % Accesează numărul de iterații pentru acest regulator
     iteration = 1:a;  % Vectorul de iterații
 
     % Accesează vectorul 'best' pentru fiecare regulator
-    best_values = Reg_TID_H22(i).best(init:end);
+    best_values = Reg_TFOIDFFID_H22(i).best(init:end);
     % Asigură-te că lungimea lui 'iteration' și 'best_values' sunt egale
     if length(iteration) ~= length(best_values)
         iteration = iteration(1:length(best_values));  % Ajustează lungimea dacă e nevoie

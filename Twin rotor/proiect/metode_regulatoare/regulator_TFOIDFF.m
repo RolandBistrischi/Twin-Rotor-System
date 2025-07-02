@@ -1,8 +1,4 @@
-%% regulator TFOIDFF cu cod de la un indian
-%https://www.youtube.com/watch?v=qlZxsP-JQsQ
-% se foloseste ITAE
-
-%ant colony:   https://www.youtube.com/watch?v=LKCyZ1bRiyM
+%% regulator TFOIDFF 
 
 addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\functii\');
 addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\');
@@ -11,10 +7,10 @@ addpath('D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\proiect\');
 clc;clear ; close all;
 %%
 
-G=tf(8072.8,[1 1.287]);%H11
-%G= tf(33157,[1 3.527]);%H22
+%G=tf(8072.8,[1 1.287]);%H11
+G= tf(33157,[1 3.527]);%H22
 
-criteriu='ise';
+criteriu='iae';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
@@ -169,12 +165,12 @@ plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel([
 legend([criteriu ' for PSO-PID']);
 title('Error with each iteration');
 
-RegTFOIDFFID_H11_ISE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii',[]);
-RegTFOIDFFID_H11_ISE.regulator=Gc_fotf;
-RegTFOIDFFID_H11_ISE.runtime=runtime;
-RegTFOIDFFID_H11_ISE.iteration=iteration;
-RegTFOIDFFID_H11_ISE.best=best_cf_ac;
-RegTFOIDFFID_H11_ISE.parametrii=xg;
+RegTFOIDFFID_H22_IAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii',[]);
+RegTFOIDFFID_H22_IAE.regulator=Gc_fotf;
+RegTFOIDFFID_H22_IAE.runtime=runtime;
+RegTFOIDFFID_H22_IAE.iteration=iteration;
+RegTFOIDFFID_H22_IAE.best=best_cf_ac;
+RegTFOIDFFID_H22_IAE.parametrii=xg;
 %%
 %H22
 % Min_ITAE =   9.1603e-12

@@ -2,8 +2,8 @@
 close all;clear all; clc;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 %%
-azimuth=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests\Reg_PIDD2\date_step_azimuth.mat");
-pitch=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests\Reg_PIDD2\date_step_pitch.mat");
+azimuth=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests 2\Reg_PIDD2\date_step_azimuth.mat");
+pitch=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests 2\Reg_PIDD2\date_step_pitch.mat");
 
 azimuth_az_intrare=azimuth.out.azimuth_regulator_step_azimuth;
 
@@ -21,14 +21,14 @@ xlabel('Timp [s]');
 ylabel('Viteză de rotație [RPM]');
 
 % Adaugă un inset (axă mică de zoom in)
-axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
-box on; % ramă în jurul inset-ului
-index = azi_time >=2.5*10-4 & azi_time <=6*10-3; % ajustează după zona care te interesează
-index = azi_time >=0.00002 & azi_time <=0.005; % ajustează după zona care te interesează
-
-
-plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
-title('Zoom-in');
+% axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+% box on; % ramă în jurul inset-ului
+% index = azi_time >=2.5*10-4 & azi_time <=6*10-3; % ajustează după zona care te interesează
+% index = azi_time >=0.00002 & azi_time <=0.005; % ajustează după zona care te interesează
+% 
+% 
+% plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
+% title('Zoom-in');
 
 
 %%
@@ -102,15 +102,15 @@ title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ..
 xlabel('Timp [s]');
 ylabel('Viteză de rotație [RPM]');
 
-% Adaugă un inset (axă mică de zoom in)
-axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
-box on; % ramă în jurul inset-ului
-index = pitch_time >=2.5*10-4 & pitch_time <=6*10-1; % ajustează după zona care te interesează
-index = pitch_time >=0.00002 & pitch_time <=0.05; % ajustează după zona care te interesează
-
-
-plot(pitch_time(index), pitch_rpm_step_pit(index,1:end-1), 'LineWidth', 1.5);
-title('Zoom-in');
+% % Adaugă un inset (axă mică de zoom in)
+% axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
+% box on; % ramă în jurul inset-ului
+% index = pitch_time >=2.5*10-4 & pitch_time <=6*10-1; % ajustează după zona care te interesează
+% index = pitch_time >=0.00002 & pitch_time <=0.05; % ajustează după zona care te interesează
+% 
+% 
+% plot(pitch_time(index), pitch_rpm_step_pit(index,1:end-1), 'LineWidth', 1.5);
+% title('Zoom-in');
 
 
 
@@ -183,20 +183,20 @@ end
 
 %load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 
- %
-% Reg_TID_H11=[minreal(oustapp( loadedData(1).RegTID_H11_ISE.regulator)) ,
-%  minreal(oustapp( loadedData(1).RegTID_H11_ITSE.regulator))    ,
-%  minreal(oustapp( loadedData(1).RegTID_H11_IAE.regulator))    ,
-%  minreal(oustapp( loadedData(1).RegTID_H11_ITAE.regulator))    ,
-% % minreal(oustapp( loadedData(1).RegTID_H11_sensibility.regulator ))     
-%  ]
-% 
-% Reg_TID_H22=[minreal(oustapp(  loadedData(2).RegTID_H22_ISE.regulator)) ,
-% minreal(oustapp( loadedData(2).RegTID_H22_ITSE.regulator))     ,
-% minreal(oustapp( loadedData(2).RegTID_H22_IAE.regulator))     ,
-%  minreal(oustapp( loadedData(2).RegTID_H22_ITAE.regulator))    ,
-%  % minreal(oustapp( loadedData(2).RegTID_H22_sensibility.regulator ))   
-%   ]
+
+Reg_PIDD_H11=[ loadedData(1).RegPIDD_H11_ISE,
+  loadedData(1).RegPIDD_H11_ITSE ,
+  loadedData(1).RegPIDD_H11_IAE    ,
+  loadedData(1).RegPIDD_H11_ITAE   ,
+% minreal(oustapp( loadedData(1).RegTID_H11_sensibility.regulator ))     
+ ];
+
+Reg_PIDD_H22=[ loadedData(2).RegPIDD_H22_ISE ,
+ loadedData(2).RegPIDD_H22_ITSE    ,
+ loadedData(2).RegPIDD_H22_IAE     ,
+ loadedData(2).RegPIDD_H22_ITAE    ,
+ % minreal(oustapp( loadedData(2).RegTID_H22_sensibility.regulator ))   
+  ];
 %%
 clc;
 %Hr=loadedData(2).RegTID_H22_IAE.regulator;
@@ -223,8 +223,8 @@ hold on;
 bode(H11, 'b--');  % Linie întreruptă pentru sistemul inițial
 
 % Plot pentru fiecare regulator din Reg_PID_H11
-for i = 1:length(Reg_TID_H11)
-    Gc =minreal(oustapp( Reg_TID_H11(i).regulator));
+for i = 1:length(Reg_PIDD_H11)
+    Gc =minreal(oustapp( Reg_PIDD_H11(i).regulator));
     bode(Gc * H11);
 end
 
@@ -240,12 +240,12 @@ hold off;
 
 init=5;
 figure;
-for i = 1:length(Reg_TID_H11)
-    a = Reg_TID_H11(i).iteration;  % Accesează numărul de iterații pentru acest regulator
+for i = 1:length(Reg_PIDD_H11)
+    a = Reg_PIDD_H11(i).iteration;  % Accesează numărul de iterații pentru acest regulator
     iteration = 1:a;  % Vectorul de iterații
 
     % Accesează vectorul 'best' pentru fiecare regulator
-    best_values = Reg_TID_H11(i).best(init:end);
+    best_values = Reg_PIDD_H11(i).best(init:end);
     % Asigură-te că lungimea lui 'iteration' și 'best_values' sunt egale
     if length(iteration) ~= length(best_values)
         iteration = iteration(1:length(best_values));  % Ajustează lungimea dacă e nevoie
@@ -269,8 +269,8 @@ hold on;
 % Plot Bode pentru sistemul inițial
 bode(H22, 'b--');  % Linie întreruptă pentru sistemul inițial
 
-for i = 1:length(Reg_TID_H22)
-    Gc =minreal(oustapp( Reg_TID_H22(i).regulator));
+for i = 1:length(Reg_PIDD_H22)
+    Gc =minreal(oustapp( Reg_PIDD_H22(i).regulator));
     bode(Gc * H22);
 end
 
@@ -284,12 +284,12 @@ hold off;
 
 init=8;
 figure;
-for i = 1:length(Reg_TID_H22)
-    a = Reg_TID_H22(i).iteration;  % Accesează numărul de iterații pentru acest regulator
+for i = 1:length(Reg_PIDD_H22)
+    a = Reg_PIDD_H22(i).iteration;  % Accesează numărul de iterații pentru acest regulator
     iteration = 1:a;  % Vectorul de iterații
 
     % Accesează vectorul 'best' pentru fiecare regulator
-    best_values = Reg_TID_H22(i).best(init:end);
+    best_values = Reg_PIDD_H22(i).best(init:end);
     % Asigură-te că lungimea lui 'iteration' și 'best_values' sunt egale
     if length(iteration) ~= length(best_values)
         iteration = iteration(1:length(best_values));  % Ajustează lungimea dacă e nevoie

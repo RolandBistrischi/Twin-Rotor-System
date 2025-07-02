@@ -2,8 +2,8 @@
 close all;clear all; clc;
 load("D:\MATLAB\An 3 Exercitii\Twin rotor\Twin-Rotor-System\Twin rotor\date.mat");
 %%
-azimuth=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests\Reg_MultiPID\ITAE\date_step_azimuth.mat");
-pitch=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests\Reg_MultiPID\ITAE\date_step_pitch.mat");
+azimuth=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests 2\Reg_MultiPID\ITAE\date_step_azimuth.mat");
+pitch=load("D:\MATLAB\Licenta_fractionar\Twin-Rotor-System\Twin rotor\Simulink tests 2\Reg_MultiPID\ITAE\date_step_pitch.mat");
 
 azimuth_az_intrare=azimuth.out.azimuth_regulator_step_azimuth;
 
@@ -16,7 +16,7 @@ azimuth_pos_step_azi=azimuth_az_intrare.Data(:,9:15);
 
 figure;
 plot(azi_time, azimuth_rpm_step_azi);
-legend('ord 2 cu ord 1', 'ord 1 cu ord 2','ord 4 cu ord 5', 'ord 3 cu ord 3','ord 5 cu ord 4',        'ord 8 cu ord 6',          'inițial');
+legend('ord 4 cu ord 8', 'ord 2 cu ord 4','ord 6 cu ord 3', 'ord 1 cu ord 2','ord 3 cu ord 1',        'ord 5 cu ord 5',          'inițial');
 title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
        ' azimutului pentru un răspuns la un semnal treaptă'});
 xlabel('Timp [s]');
@@ -26,7 +26,7 @@ ylabel('Viteză de rotație [RPM]');
 axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
 box on; % ramă în jurul inset-ului
 index = azi_time >=2.5*10-4 & azi_time <=6*10-2; % ajustează după zona care te interesează
-index = azi_time >=0.0001 & azi_time <=0.005; % ajustează după zona care te interesează
+index = azi_time >=0& azi_time <=azi_time(end); % ajustează după zona care te interesează
 
 
 plot(azi_time(index), azimuth_rpm_step_azi(index,1:end-1), 'LineWidth', 1.5);
@@ -100,7 +100,7 @@ pitch_pos_step_pit=pitch_pit_intrare.Data(:,9:15);
 
 figure;
 plot(pitch_time,pitch_rpm_step_pit);
-legend('ord 2 cu ord 1', 'ord 1 cu ord 2','ord 4 cu ord 5', 'ord 3 cu ord 3','ord 5 cu ord 4',  'ord 8 cu ord 6',   'inițial');
+legend('ord 4 cu ord 8', 'ord 2 cu ord 4','ord 6 cu ord 3', 'ord 1 cu ord 2','ord 3 cu ord 1',        'ord 5 cu ord 5',          'inițial');
 title({'Evaluarea performanței regulatoarelor optimizate pentru controlul' , ...
        ' pitch-ului pentru un răspuns la un semnal treaptă'});
 xlabel('Timp [s]');
@@ -110,7 +110,7 @@ ylabel('Viteză de rotație [RPM]');
 axInset = axes('Position', [0.6, 0.2, 0.3, 0.3]); % [x y width height], valori între 0 și 1
 box on; % ramă în jurul inset-ului
 index = pitch_time >=2.5*10-4 & pitch_time <=6*10-1; % ajustează după zona care te interesează
-index = pitch_time >=0.00002 & pitch_time <=0.04; % ajustează după zona care te interesează
+index = pitch_time >=0 & pitch_time <=pitch_time(end); % ajustează după zona care te interesează
 
 
 plot(pitch_time(index), pitch_rpm_step_pit(index,1:end-1), 'LineWidth', 1.5);
@@ -196,21 +196,23 @@ end
 % 
 % 
 % % Procesează regulatoarele pentru H11 și H22
-% Reg_TFOIDFFID_H11 = [
-%     loadedData(1).RegTFOIDFFID_H11_ISE,
-%    loadedData(1).RegTFOIDFFID_H11_ITSE, 
-%     loadedData(1).RegTFOIDFFID_H11_IAE, 
-%     loadedData(1).RegTFOIDFFID_H11_ITAE,
-%    % loadedData(1).RegTID_H11_sensibility
-% ]
-% 
-% Reg_TFOIDFFID_H22 = [
-%    loadedData(2).RegTFOIDFFID_H22_ISE, ...
-%   loadedData(2).RegTFOIDFFID_H22_ITSE, ...
-%    loadedData(2).RegTFOIDFFID_H22_IAE, ...
-%    loadedData(2).RegTFOIDFFID_H22_ITAE, ...
-%    % loadedData(2).RegTID_H22_sensibility
-% ];
+Reg_MultiPID_H11 = [
+    loadedData(1).RegFrac_H11_ITAE(1),
+   loadedData(1).RegFrac_H11_ITAE(2), 
+    loadedData(1).RegFrac_H11_ITAE(3), 
+    loadedData(1).RegFrac_H11_ITAE(4),
+   loadedData(1).RegFrac_H11_ITAE(5), 
+    loadedData(1).RegFrac_H11_ITAE(6), 
+]
+
+Reg_MultiPID_H22 = [
+    loadedData(2).RegFrac_H22_ITAE(1),
+   loadedData(2).RegFrac_H22_ITAE(2), 
+    loadedData(2).RegFrac_H22_ITAE(3), 
+    loadedData(2).RegFrac_H22_ITAE(4),
+   loadedData(2).RegFrac_H22_ITAE(5), 
+    loadedData(2).RegFrac_H22_ITAE(6), 
+];
 
 %%
 % Reg_TID_H11=[minreal(oustapp( loadedData(1).RegTID_H11_ISE.regulator)) ,
@@ -226,21 +228,22 @@ end
 % %  minreal(oustapp( loadedData(2).RegTID_H22_ITAE.regulator))    ,
 % %  % minreal(oustapp( loadedData(2).RegTID_H22_sensibility.regulator ))   
 % %   ]
-legend('ord 2 cu ord 1', 'ord 1 cu ord 2','ord 4 cu ord 5', 'ord 3 cu ord 3','ord 5 cu ord 4',        'ord 8 cu ord 6',          'inițial');
+legend('ord 4 cu ord 8', 'ord 2 cu ord 4','ord 6 cu ord 3', 'ord 1 cu ord 2','ord 3 cu ord 1',        'ord 5 cu ord 5',          'inițial');
 %%
 clc;
 %Hr=loadedData(2).RegTID_H22_IAE.regulator;
 
 BBBBBBBB1= loadedData(1).RegFrac_H11_ITAE(6)  .regulator
 BBBBBBBB2= loadedData(2).RegFrac_H22_ITAE(6) .regulator
+
 H11_MultiPID_ITAE= minreal(oustapp(BBBBBBBB1));
 
 H22_MultiPID_ITAE= minreal(oustapp( BBBBBBBB2));
 
 
-[num_MultiPID_ITAE11, den_MultiPID_ITAE11] = tfdata(tf(H11_MultiPID_ITAE), 'v');
+[num_MultiPID_ITAE11, den_MultiPID_ITAE11] = tfdata(tf(H11_MultiPID_ITAE), 'v')
 
-[num_MultiPID_ITAE22, den_MultiPID_ITAE22] = tfdata(tf(H22_MultiPID_ITAE), 'v');
+[num_MultiPID_ITAE22, den_MultiPID_ITAE22] = tfdata(tf(H22_MultiPID_ITAE), 'v')
 
 
 
@@ -257,16 +260,18 @@ hold on;
 bode(H11, 'b--');  % Linie întreruptă pentru sistemul inițial
 
 % Plot pentru fiecare regulator din Reg_PID_H11
-for i = 1:length(Reg_TID_H11)
-    Gc =minreal(oustapp( Reg_TID_H11(i).regulator));
+for i = 1:length(Reg_MultiPID_H11)
+    Gc =minreal(oustapp( Reg_MultiPID_H11(i).regulator));
     bode(Gc * H11);
 end
 
 % Adaugă titlu, legende și etichete
-title('Diagrama Bode pentru H11 și regulatoare TID');
+title('Diagrama Bode pentru H11 și regulatoare MultiPID_ITAE');
 %legend_entries = ['Sistem inițial'; arrayfun(@(x) sprintf('Regulator %d', x), 1:length(Reg_PID_H11), 'UniformOutput', false)];
 %legend(legend_entries, 'Location', 'Best');
-legend("H11",'ISE','ITSE','IAE','ITAE')
+%legend("H11",'ISE','ITSE','IAE','ITAE')
+%legend('H11','ord 4 cu ord 8', 'ord 2 cu ord 4','ord 6 cu ord 3', 'ord 1 cu ord 2','ord 3 cu ord 1',        'ord 5 cu ord 5' );
+legend('H11','ord 4 ', 'ord 2 ','ord 6 ', 'ord 1','ord 3 ', 'ord 5 ' );
 xlabel('Frecvență (rad/s)');
 ylabel('Amplitudine și fază');
 
@@ -274,12 +279,12 @@ hold off;
 
 init=5;
 figure;
-for i = 1:length(Reg_TID_H11)
-    a = Reg_TID_H11(i).iteration;  % Accesează numărul de iterații pentru acest regulator
+for i = 1:length(Reg_MultiPID_H11)
+    a = Reg_MultiPID_H11(i).iteration;  % Accesează numărul de iterații pentru acest regulator
     iteration = 1:a;  % Vectorul de iterații
 
     % Accesează vectorul 'best' pentru fiecare regulator
-    best_values = Reg_TID_H11(i).best(init:end);
+    best_values = Reg_MultiPID_H11(i).best(init:end);
     % Asigură-te că lungimea lui 'iteration' și 'best_values' sunt egale
     if length(iteration) ~= length(best_values)
         iteration = iteration(1:length(best_values));  % Ajustează lungimea dacă e nevoie
@@ -289,7 +294,9 @@ for i = 1:length(Reg_TID_H11)
 end
 
 xlabel('Iteratii');ylabel(['Cost']);
-legend('ISE','ITSE','IAE','ITAE')
+%legend('ISE','ITSE','IAE','ITAE')
+legend('ord 4 ', 'ord 2 ','ord 6 ', 'ord 1','ord 3 ', 'ord 5 ' );
+
 
 title('Eroarea pentru regulatorul lui H11 folosind PSO');
 
@@ -303,14 +310,16 @@ hold on;
 % Plot Bode pentru sistemul inițial
 bode(H22, 'b--');  % Linie întreruptă pentru sistemul inițial
 
-for i = 1:length(Reg_TID_H22)
-    Gc =minreal(oustapp( Reg_TID_H22(i).regulator));
+for i = 1:length(Reg_MultiPID_H22)
+    Gc =minreal(oustapp( Reg_MultiPID_H22(i).regulator));
     bode(Gc * H22);
 end
 
 % Adaugă titlu, legende și etichete
-title('Diagrama Bode pentru H22 și regulatoare TID');
-legend("H22",'ISE','ITSE','IAE','ITAE')
+title('Diagrama Bode pentru H22 și regulatoare MultiPID_ITAE');
+%legend("H22",'ISE','ITSE','IAE','ITAE')
+%legend('H22','ord 4 cu ord 8', 'ord 2 cu ord 4','ord 6 cu ord 3', 'ord 1 cu ord 2','ord 3 cu ord 1',        'ord 5 cu ord 5' );
+legend('H22',' ord 8', ' ord 4','ord 3', ' ord 2',' ord 1', ' ord 5' );
 xlabel('Frecvență (rad/s)');
 ylabel('Amplitudine și fază');
 
@@ -318,12 +327,12 @@ hold off;
 
 init=8;
 figure;
-for i = 1:length(Reg_TID_H22)
-    a = Reg_TID_H22(i).iteration;  % Accesează numărul de iterații pentru acest regulator
+for i = 1:length(Reg_MultiPID_H22)
+    a = Reg_MultiPID_H22(i).iteration;  % Accesează numărul de iterații pentru acest regulator
     iteration = 1:a;  % Vectorul de iterații
 
     % Accesează vectorul 'best' pentru fiecare regulator
-    best_values = Reg_TID_H22(i).best(init:end);
+    best_values = Reg_MultiPID_H22(i).best(init:end);
     % Asigură-te că lungimea lui 'iteration' și 'best_values' sunt egale
     if length(iteration) ~= length(best_values)
         iteration = iteration(1:length(best_values));  % Ajustează lungimea dacă e nevoie
@@ -333,7 +342,8 @@ for i = 1:length(Reg_TID_H22)
 end
 
 xlabel('Iteratii');ylabel(['Cost']);
-legend('ISE','ITSE','IAE','ITAE')
+%legend('ISE','ITSE','IAE','ITAE')
+legend(' ord 8', ' ord 4','ord 3', ' ord 2',' ord 1', ' ord 5' );
 
 
 title('Eroarea pentru regulatorul lui H22 folosind PSO');

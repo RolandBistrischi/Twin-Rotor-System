@@ -14,7 +14,7 @@ clc;clear all; close all;
 G=tf(8072.8,[1 1.287]);%H11
 %G= tf(33157,[1 3.527]);%H22
 
-criteriu='ise';
+criteriu='iae';
 %criteriu_combinat=[0.5,0.5,0.5,0.5,0.5];
 criteriu_combinat=0;
 
@@ -192,10 +192,10 @@ plot(t_cf,best_cf_ac(init:end),'r--','LineWidth',2);xlabel('iteration');ylabel([
 legend([criteriu ' for PSO-PID']);
 title('Error with each iteration');
 
-RegPIDD_H11_ISE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii',[]);
-RegPIDD_H11_ISE.regulator=Gc_fotf;
-RegPIDD_H11_ISE.runtime=runtime;
-RegPIDD_H11_ISE.iteration=iteration;
-RegPIDD_H11_ISE.best=best_cf_ac;
-RegPIDD_H11_ISE.parametrii=xg;
+RegPIDD_H11_IAE = struct('regulator', [], 'runtime', [],'iteration',[],'best',[],'parametrii',[]);
+RegPIDD_H11_IAE.regulator=Gc_fotf;
+RegPIDD_H11_IAE.runtime=runtime;
+RegPIDD_H11_IAE.iteration=iteration;
+RegPIDD_H11_IAE.best=best_cf_ac;
+RegPIDD_H11_IAE.parametrii=xg;
 %%

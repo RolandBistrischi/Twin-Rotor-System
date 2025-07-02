@@ -151,7 +151,7 @@ end
 %T_r
 %T
 %Intervalele dorite
-%if (T_r < T / 4 || T_r > T * 1.5)
+%if (T_r < T / 4 || T_r > T /2)
 if ( T_r < T  || T_r>0.5)
     return;
 end
